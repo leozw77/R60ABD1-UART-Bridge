@@ -1,0 +1,41 @@
+name: Build R60ABD1 UART Bridge
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "sdkconfig.defaults"
+      - "main/**"
+      - "CMakeLists.txt"
+      - ".github/workflows/build.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build ESP32-C3 bridge
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.3.5
+          target: esp32c3
+          path: .
+          command: idf.py build
+
+      - name: Show app size and checksum
+        run: |
+          ls -lh build/esp32_uart_bridge.bin
+          sha256sum build/esp32_uart_bridge.bin
+
+      - name: Upload app-only firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: R60ABD1-UART-Bridge-ESP32C3-app
+          path: build/esp32_uart_bridge.bin
+          if-no-files-found: error
