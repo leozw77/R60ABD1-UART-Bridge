@@ -50,7 +50,7 @@ int usb_write(uint8_t *buf, uint32_t len) {
         } else {
             vTaskDelay(TIMEOUT_MS / portTICK_PERIOD_MS);
             if (++timeouts > TIMEOUT_MAX) {
-                ESP_LOGW(TAG, "TX timeout after %u ms", TIMEOUT_MAX*TIMEOUT_MS);
+                ESP_LOGW(TAG, "TX timeout after %lu ms", (unsigned long)(TIMEOUT_MAX*TIMEOUT_MS));
                 break;
             }
         }
@@ -69,21 +69,3 @@ int usb_read(uint8_t *buf, uint32_t len) {
 #endif
     return rx;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
